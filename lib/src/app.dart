@@ -8,7 +8,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(),
-        body: Center(child: Bee()),
+        body: Beetle()
       ),
     );
   }
@@ -65,6 +65,76 @@ class _BeeState extends State<Bee> {
             onTap: onTap,
             child: Hex(
               color: Colors.yellow,
+              elevation: 0.0,
+            ),
+          ),
+        ),
+      ] + moves,
+    );
+  }
+
+  void onTap(){
+    setState((){
+      moves = movesVisible ?calcMoves() :[] ;
+      movesVisible=!movesVisible;
+    });
+  }
+
+  List<Widget> calcMoves(){
+    List<Widget> moves = [];
+    List<dynamic> coords = [
+      {'x':0.0, 'y':-0.5},
+      {'x':0.0, 'y':0.5},
+      {'x':0.75 / sqrt(3) * 2, 'y':0.25},
+      {'x':0.75 / sqrt(3) * 2, 'y':-0.25},
+      {'x':-0.75 / sqrt(3) * 2, 'y':0.25},
+      {'x':-0.75 / sqrt(3) * 2, 'y':-0.25},
+    ];
+    for(var i = 0; i<coords.length; i++){
+      moves.add(
+        Container(
+          alignment: Alignment(coords[i]['x'],coords[i]['y']),
+          child: GestureDetector(
+            onTap: onTap,
+            child: Hex(
+              color: Colors.blueGrey[100],
+              elevation: 0.0,
+            ),
+          ),
+        )
+      );
+    }
+
+    return moves;
+  }
+}
+
+class Beetle extends StatefulWidget {
+  @override
+  _BeetleState createState() => _BeetleState();
+}
+
+class _BeetleState extends State<Beetle> {
+  bool movesVisible;
+  List<Widget> moves;
+
+  @override
+  void initState() {
+    super.initState();
+    movesVisible = false;
+    moves = [];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        Container(
+          alignment: Alignment(0,0),
+          child: GestureDetector(
+            onTap: onTap,
+            child: Hex(
+              color: Colors.purple,
               elevation: 0.0,
             ),
           ),
