@@ -97,7 +97,7 @@ class _BeeState extends State<Bee> {
           child: GestureDetector(
             onTap: onTap,
             child: Hex(
-              color: Colors.blueGrey[100],
+              color: Colors.blueGrey[100].withOpacity(0.5),
               elevation: 0.0,
             ),
           ),
@@ -167,7 +167,7 @@ class _BeetleState extends State<Beetle> {
           child: GestureDetector(
             onTap: onTap,
             child: Hex(
-              color: Colors.blueGrey[100],
+              color: Colors.blueGrey[100].withOpacity(0.5),
               elevation: 0.0,
             ),
           ),
