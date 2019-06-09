@@ -19,8 +19,13 @@ class _AppState extends State<App> {
     super.initState();
     visibleMoves = [];
     pieces = [
-      Piece( color: Colors.red, hex: Hex(0,1), ),
-      Piece( color: Colors.blue, hex: Hex(2,2), ),
+      Beetle(Hex(0,1)),
+      Bee(Hex(0,2)),
+      Ant(Hex(1,1)),
+      Grasshopper(Hex(0,3)),
+      Spider(Hex(2,1)),
+      Mosquito(Hex(1,2)),
+      LadyBug(Hex(1,3)),
     ];
   }
 
@@ -46,7 +51,7 @@ class _AppState extends State<App> {
             left: move.hex.toPixel(layout).x,
             top: move.hex.toPixel(layout).y,
             child: GestureDetector(
-              onTap: ()=>moveTo(piece, move.hex),
+              onTap: ()=>moveTo(selectedPiece, move.hex),
               child: move
             ),
           )
@@ -81,23 +86,140 @@ class _AppState extends State<App> {
       visibleMoves = [];
       selectedPiece = null;
       pieces.removeWhere((_piece)=>_piece.hex==piece.hex);
-      pieces.add(Piece(hex: newHex, color: piece.color,));
+      pieces.add(piece.moveTo(newHex));
     });
   }
 }
 
-class Piece extends StatelessWidget {
-  Piece({Key key, this.color, hex}) 
-  : this.hex = hex,
-    moves = [
-      Move(hex: Hex(hex.q, hex.r+1)),
-      Move(hex: Hex(hex.q, hex.r-1)),
-      Move(hex: Hex(hex.q+1, hex.r)),
-      Move(hex: Hex(hex.q+1, hex.r-1)),
-      Move(hex: Hex(hex.q-1, hex.r+1)),
-      Move(hex: Hex(hex.q-1, hex.r)),
-    ],
-    super(key: key);
+class Beetle extends Piece{
+  Beetle(this.hex)
+    : this.color = Colors.purple,
+      this.moves = [
+        Move(hex: Hex(hex.q, hex.r+1)),
+        Move(hex: Hex(hex.q, hex.r-1)),
+        Move(hex: Hex(hex.q+1, hex.r)),
+        Move(hex: Hex(hex.q+1, hex.r-1)),
+        Move(hex: Hex(hex.q-1, hex.r+1)),
+        Move(hex: Hex(hex.q-1, hex.r)),
+      ];
+
+  final Hex hex;
+  final Color color;
+  final List<Move> moves;
+
+  Beetle moveTo(newHex) => Beetle(newHex);
+}
+class Bee extends Piece{
+  Bee(this.hex)
+    : this.color = Colors.yellow,
+      this.moves = [
+        Move(hex: Hex(hex.q, hex.r+1)),
+        Move(hex: Hex(hex.q, hex.r-1)),
+        Move(hex: Hex(hex.q+1, hex.r)),
+        Move(hex: Hex(hex.q+1, hex.r-1)),
+        Move(hex: Hex(hex.q-1, hex.r+1)),
+        Move(hex: Hex(hex.q-1, hex.r)),
+      ];
+
+  final Hex hex;
+  final Color color;
+  final List<Move> moves;
+
+  Bee moveTo(newHex) => Bee(newHex);
+}
+class Spider extends Piece{
+  Spider(this.hex)
+    : this.color = Colors.orange,
+      this.moves = [
+        Move(hex: Hex(hex.q, hex.r+1)),
+        Move(hex: Hex(hex.q, hex.r-1)),
+        Move(hex: Hex(hex.q+1, hex.r)),
+        Move(hex: Hex(hex.q+1, hex.r-1)),
+        Move(hex: Hex(hex.q-1, hex.r+1)),
+        Move(hex: Hex(hex.q-1, hex.r)),
+      ];
+
+  final Hex hex;
+  final Color color;
+  final List<Move> moves;
+
+  Spider moveTo(newHex) => Spider(newHex);
+}
+class Ant extends Piece{
+  Ant(this.hex)
+    : this.color = Colors.blue,
+      this.moves = [
+        Move(hex: Hex(hex.q, hex.r+1)),
+        Move(hex: Hex(hex.q, hex.r-1)),
+        Move(hex: Hex(hex.q+1, hex.r)),
+        Move(hex: Hex(hex.q+1, hex.r-1)),
+        Move(hex: Hex(hex.q-1, hex.r+1)),
+        Move(hex: Hex(hex.q-1, hex.r)),
+      ];
+
+  final Hex hex;
+  final Color color;
+  final List<Move> moves;
+
+  Ant moveTo(newHex) => Ant(newHex);
+}
+class Grasshopper extends Piece{
+  Grasshopper(this.hex)
+    : this.color = Colors.green,
+      this.moves = [
+        Move(hex: Hex(hex.q, hex.r+1)),
+        Move(hex: Hex(hex.q, hex.r-1)),
+        Move(hex: Hex(hex.q+1, hex.r)),
+        Move(hex: Hex(hex.q+1, hex.r-1)),
+        Move(hex: Hex(hex.q-1, hex.r+1)),
+        Move(hex: Hex(hex.q-1, hex.r)),
+      ];
+
+  final Hex hex;
+  final Color color;
+  final List<Move> moves;
+
+  Grasshopper moveTo(newHex) => Grasshopper(newHex);
+}
+class LadyBug extends Piece{
+  LadyBug(this.hex)
+    : this.color = Colors.red,
+      this.moves = [
+        Move(hex: Hex(hex.q, hex.r+1)),
+        Move(hex: Hex(hex.q, hex.r-1)),
+        Move(hex: Hex(hex.q+1, hex.r)),
+        Move(hex: Hex(hex.q+1, hex.r-1)),
+        Move(hex: Hex(hex.q-1, hex.r+1)),
+        Move(hex: Hex(hex.q-1, hex.r)),
+      ];
+
+  final Hex hex;
+  final Color color;
+  final List<Move> moves;
+
+  LadyBug moveTo(newHex) => LadyBug(newHex);
+}
+class Mosquito extends Piece{
+  Mosquito(this.hex)
+    : this.color = Colors.blueGrey,
+      this.moves = [
+        Move(hex: Hex(hex.q, hex.r+1)),
+        Move(hex: Hex(hex.q, hex.r-1)),
+        Move(hex: Hex(hex.q+1, hex.r)),
+        Move(hex: Hex(hex.q+1, hex.r-1)),
+        Move(hex: Hex(hex.q-1, hex.r+1)),
+        Move(hex: Hex(hex.q-1, hex.r)),
+      ];
+
+  final Hex hex;
+  final Color color;
+  final List<Move> moves;
+
+  Mosquito moveTo(newHex) => Mosquito(newHex);
+}
+
+abstract class Piece extends StatelessWidget {
+  const Piece({Key key, this.color, this.hex, this.moves}) : super(key: key);
   
   final Color color;
   final Hex hex;
@@ -120,6 +242,8 @@ class Piece extends StatelessWidget {
       ),
     );
   }
+
+  Piece moveTo(Hex newHex);
 }
 
 class Move extends StatelessWidget {
