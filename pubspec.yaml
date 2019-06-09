@@ -10,6 +10,7 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^0.1.2
   polygon_clipper: ^1.0.2
+  hexagonal_grid_widget: ^1.0.2
 
 dev_dependencies:
   flutter_test:
