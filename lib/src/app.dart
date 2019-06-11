@@ -13,6 +13,7 @@ class _AppState extends State<App> {
   List<Move> visibleMoves;
   Piece selectedPiece;
   List pieces = [];
+  Map<int, Map<int, Piece>> board = {0 : {0 : Beetle(Hex(0,0))}};
 
   @override
   void initState() {
@@ -32,10 +33,12 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     HexLayout layout = HexLayout.orientFlat(Point(45, 45), Point(0,0));
-    List<Widget> board = [];
+    List<Widget> children = [];
 
     for(Piece piece in pieces){
-      board.add(
+      if(board[piece.hex.r]==null) board[piece.hex.r]={};
+      board[piece.hex.r][piece.hex.q] = piece;
+      children.add(
         Positioned(
           left: piece.hex.toPixel(layout).x,
           top: piece.hex.toPixel(layout).y,
@@ -46,7 +49,7 @@ class _AppState extends State<App> {
         )
       );
       for(Move move in visibleMoves){
-        board.add(
+        if(validateMove(move.hex)) children.add(
           Positioned(
             left: move.hex.toPixel(layout).x,
             top: move.hex.toPixel(layout).y,
@@ -63,11 +66,40 @@ class _AppState extends State<App> {
       home: Scaffold(
         appBar: AppBar(),
         body: Stack(
-          children: board,
+          children: children,
         )
       ),
     );
   }
+
+  bool validateMove(Hex target){
+    List<Hex> neighbors = [];
+    List<Hex> spaces = [];
+    List<Hex> targetNeighbors = [];
+    List<Hex> targetSpaces = [];
+    for(int i=0; i<6; i++) {
+      if(board[selectedPiece.hex.neighbor(i).r]==null) board[selectedPiece.hex.neighbor(i).r] = {};
+      if (board[selectedPiece.hex.neighbor(i).r][selectedPiece.hex.neighbor(i).q]!=null){
+        neighbors.add(selectedPiece.hex.neighbor(i));
+      } else spaces.add(selectedPiece.hex.neighbor(i));
+    }
+    for(int i=0; i<6; i++) {
+      if(board[target.neighbor(i).r]==null) board[target.neighbor(i).r] = {};
+      if (board[target.neighbor(i).r][target.neighbor(i).q]!=null){
+        targetNeighbors.add(target.neighbor(i));
+      } else targetSpaces.add(target.neighbor(i));
+    }
+    bool spaceEmpty = board[target.r]==null || board[target.r][target.q]==null;
+    bool connectedSpace = pieces.firstWhere((piece)=>distance(piece.hex, target)==1&&piece.hex!=selectedPiece.hex, orElse: ()=>null)!=null;
+    bool fourNeigborsOrLess = neighbors.length <= 4;
+    bool spaceToSlideOut = neighbors.length!=4 ? true : distance(spaces[0], spaces[1])==1;
+    // bool spaceToSlideIn = targetNeighbors.length >= 4 ? false : targetSpaces[0].q==targetSpaces[1].q || targetSpaces[0].r==targetSpaces[1].r;
+    bool unbrokenChain2 = neighbors.length!=2 ? true : distance(neighbors[0], neighbors[1])==1;
+    bool unbrokenChain3 = neighbors.length!=3 ? true : distance(neighbors[0], neighbors[1])+distance(neighbors[1], neighbors[2])==2;
+    return spaceEmpty && connectedSpace && fourNeigborsOrLess && spaceToSlideOut && unbrokenChain2 && unbrokenChain3 && true;
+  }
+
+  int distance(Hex a, Hex b) => (((a.q - b.q).abs() + (a.r - b.r).abs() + (a.q + a.r - b.q - b.r).abs())/2).toInt();
 
   selectPiece(Piece piece) {
     piece.hex == (selectedPiece==null ? null : selectedPiece.hex)
@@ -81,12 +113,15 @@ class _AppState extends State<App> {
     });
   }
 
-  moveTo(Piece piece, Hex newHex){
+  moveTo(Piece piece, Hex target){
     setState(() {
       visibleMoves = [];
       selectedPiece = null;
       pieces.removeWhere((_piece)=>_piece.hex==piece.hex);
-      pieces.add(piece.moveTo(newHex));
+      pieces.add(piece.moveTo(target));
+      board[piece.hex.r][piece.hex.q] = null;
+      if(board[target.r]==null) board[target.r] = {};
+      board[target.r][target.q] = piece;
     });
   }
 }
